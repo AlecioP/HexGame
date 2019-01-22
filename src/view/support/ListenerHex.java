@@ -3,6 +3,8 @@ package view.support;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JOptionPane;
+
 import ai.AbsMoveStrategy;
 import ai.ArtificialIntelligence;
 import core.HexCell;
@@ -50,6 +52,7 @@ public class ListenerHex  extends MouseAdapter{
 			}
 		}catch(InvalidMoveException ex) {
 			System.out.println(ex.getMessage());
+			JOptionPane.showMessageDialog(null,ex.getMessage());
 		}
 	}
 

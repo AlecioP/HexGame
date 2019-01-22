@@ -19,10 +19,7 @@ public class BlockingMove extends AbsMoveStrategy{
 	@Override
 	protected int[] doMove(Grid context, Handler handler, ArrayList<MoveAdapter> moves) throws Exception{
 		
-		/* SUPER METHOD INCLUDES ROLE 
-		 * DEFINING PART TO THE PROGRAM */
-		
-		super.doMove(context, handler, moves);
+		includeRoleDefiner(handler);
 		
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath(AI_PATH);

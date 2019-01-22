@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import core.Grid;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.OptionDescriptor;
@@ -37,6 +39,11 @@ public class ArtificialIntelligence {
 		strategy.defineAiRole(2);
 		try {
 			int[] move = strategy.doMove(context, handler,moves);
+			if(move==null) {
+				System.out.println("CANNOT FIND VALID MOVE");
+				JOptionPane.showMessageDialog(null, "CANNOT FIND VALID MOVE");
+				return;
+			}
 			System.out.println("Move is : "+move[0]+" "+move[1]);
 			context.occupy(move[0], move[1]);
 			moves.add(new MoveAdapter(move));

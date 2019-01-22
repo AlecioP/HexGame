@@ -9,17 +9,21 @@ import java.util.ArrayList;
 import ai.convertedObjects.ControlAi;
 import ai.convertedObjects.History;
 import ai.convertedObjects.LastMove;
+import ai.convertedObjects.PotentialWin;
 import ai.convertedObjects.ResponseAi;
 import core.Coordinate;
 import core.Grid;
 import core.HexCell;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
+import it.unical.mat.embasp.base.OptionDescriptor;
 import it.unical.mat.embasp.base.Output;
 import it.unical.mat.embasp.languages.asp.ASPInputProgram;
 import it.unical.mat.embasp.languages.asp.ASPMapper;
 import it.unical.mat.embasp.languages.asp.AnswerSet;
 import it.unical.mat.embasp.languages.asp.AnswerSets;
+import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
+import it.unical.mat.embasp.specializations.dlv.desktop.DLVDesktopService;
 
 public abstract class AbsMoveStrategy {
 	protected String AI_PATH;
@@ -34,7 +38,9 @@ public abstract class AbsMoveStrategy {
 		AI_PATH = aI_PATH;
 	}
 	
-	protected int[] doMove(Grid context,Handler handler,ArrayList<MoveAdapter> moves) throws Exception {
+	protected abstract int[] doMove(Grid context,Handler handler,ArrayList<MoveAdapter> moves) throws Exception ;
+	
+	public void includeRoleDefiner(Handler handler) throws Exception{
 		if(role!=0) {
 			InputProgram facts = new ASPInputProgram();
 			facts.addObjectInput(new ControlAi(role));
@@ -45,8 +51,6 @@ public abstract class AbsMoveStrategy {
 		definer.addFilesPath(ROLE_DEFINE_PATH);
 		handler.addProgram(definer);
 		ASPMapper.getInstance().registerClass(ResponseAi.class);
-		
-		return null;
 	}
 	
 	public void defineAiRole(int role) {
@@ -71,7 +75,7 @@ public abstract class AbsMoveStrategy {
 	
 	public static int[] handleOutput(Output out) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		String error = "OUTPUT ERROR : "+System.lineSeparator();
-		int[] move = new int[2];
+		int[] move = null;
 		AnswerSets answers = (AnswerSets) out;
 		error = error +answers.getErrors();
 		
@@ -82,9 +86,10 @@ public abstract class AbsMoveStrategy {
 				if(! (atom instanceof ResponseAi))
 					continue;
 				ResponseAi resp = (ResponseAi) atom;
+				move = new int[2];
 				move[0] = resp.getRow();
 				move[1] = resp.getCol();
-				
+				break;
 			}
 			break;
 		}
@@ -142,5 +147,46 @@ public abstract class AbsMoveStrategy {
 		facts.addObjectInput(lm);
 		
 		handler.addProgram(facts);
+	}
+
+	public boolean hasAiPotentiallyWon(Grid grid) throws Exception{
+		Handler handler = new DesktopHandler(new DLVDesktopService("solver/dlv2.bin.x64"));
+		//moves is null because they are useless
+		includeRoleDefiner(handler);
+		AbsMoveStrategy.addCellsFacts(handler, grid);
+		AbsMoveStrategy.compute2Bridges(handler);
+		InputProgram solver = new ASPInputProgram();
+		solver.addFilesPath("ais/potentialWinCalculator.asp");
+		handler.addProgram(solver);
+		
+		/*OPTIONS*/
+		OptionDescriptor opt1 = new OptionDescriptor();
+		opt1.addOption("--filter=potentialWin/0");
+		opt1.setSeparator(" ");
+		handler.addOption(opt1);
+		OptionDescriptor options = new OptionDescriptor();
+		options.addOption("--print-rewriting");
+		options.setSeparator(" ");
+		handler.addOption(options);
+		/*OPTIONS*/
+		ASPMapper.getInstance().registerClass(PotentialWin.class);
+		
+		Output out = handler.startSync();
+		AnswerSets answers = (AnswerSets) out;
+		String error = "OUTPUT ERROR : "+System.lineSeparator();
+		error = error +answers.getErrors();
+		
+		System.out.println(error);
+		
+		for(AnswerSet as : answers.getAnswersets()) {
+			System.out.println("ANSWER :"+System.lineSeparator()+as.toString());
+			for(Object 	atom : as.getAtoms()) {
+				if( atom instanceof PotentialWin)
+					return true;
+			}
+			//useless but...
+			break;
+		}
+		return false;
 	}
 }

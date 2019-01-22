@@ -55,7 +55,7 @@ public class Grid {
 	
 	private void pieRule() {
 		if(movesDone!=1)
-			throw new InvalidMoveException("PIE RULES APPLIES ONLY TO THE FIRST TURN OF THE SECOND PLAYER");
+			throw new InvalidMoveException("PIE RULE APPLIES ONLY TO THE FIRST TURN OF THE SECOND PLAYER");
 		int sum = firstMove.getRow()+firstMove.getCol();
 		int diff;
 		grid[firstMove.getRow()][firstMove.getCol()].empty();

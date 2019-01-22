@@ -1,4 +1,4 @@
-% cell(State,Row,Col)% cell(State,Row,Col)
+% cell(State,Row,Col)
 % control(2) means control blue player 
 % witch goes from the left to the right side
 

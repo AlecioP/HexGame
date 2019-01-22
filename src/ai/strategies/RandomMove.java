@@ -2,6 +2,8 @@ package ai.strategies;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import ai.AbsMoveStrategy;
 import ai.MoveAdapter;
 import core.Grid;
@@ -19,10 +21,14 @@ public class RandomMove extends AbsMoveStrategy {
 	@Override
 	protected int[] doMove(Grid context, Handler handler, ArrayList<MoveAdapter> moves) throws Exception {
 		
-		/* SUPER METHOD INCLUDES ROLE 
-		 * DEFINING PART TO THE PROGRAM */
+		includeRoleDefiner(handler);
 		
-		super.doMove(context, handler, moves);
+		/*TEST*/
+		boolean resp = this.hasAiPotentiallyWon(context);
+		if(resp)
+			JOptionPane.showMessageDialog(null, "POTENTIAL WIN");
+		System.out.println("TEST : "+resp);
+		/*TEST*/
 		
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath(AI_PATH);
