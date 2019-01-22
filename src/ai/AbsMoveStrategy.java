@@ -19,7 +19,7 @@ import it.unical.mat.embasp.languages.asp.AnswerSets;
 
 public abstract class AbsMoveStrategy {
 	protected String AI_PATH;
-	private String ROLE_DEFINE_PATH = "ais/roleDefine";
+	private String ROLE_DEFINE_PATH = "ais/roleDefine.asp";
 	private int role=0;
 
 	public String getAI_PATH() {
@@ -94,7 +94,7 @@ public abstract class AbsMoveStrategy {
 	}
 	
 	public static void compute2Bridges(Handler handler) throws Exception {
-		String calculator = "ais/bridgeCalculator";
+		String calculator = "ais/bridgeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
 		addFileToProgram(program, calculator);
 		handler.addProgram(program);
