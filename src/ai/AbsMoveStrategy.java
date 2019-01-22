@@ -7,8 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import ai.convertedObjects.ControlAi;
+import ai.convertedObjects.History;
+import ai.convertedObjects.LastMove;
 import ai.convertedObjects.ResponseAi;
+import core.Coordinate;
 import core.Grid;
+import core.HexCell;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
@@ -35,13 +39,13 @@ public abstract class AbsMoveStrategy {
 			InputProgram facts = new ASPInputProgram();
 			facts.addObjectInput(new ControlAi(role));
 			handler.addProgram(facts);
-			
 		}
 		InputProgram definer = new ASPInputProgram();
 //		addFileToProgram(definer, ROLE_DEFINE_PATH);
 		definer.addFilesPath(ROLE_DEFINE_PATH);
 		handler.addProgram(definer);
 		ASPMapper.getInstance().registerClass(ResponseAi.class);
+		
 		return null;
 	}
 	
@@ -66,19 +70,13 @@ public abstract class AbsMoveStrategy {
 	}
 	
 	public static int[] handleOutput(Output out) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+		String error = "OUTPUT ERROR : "+System.lineSeparator();
 		int[] move = new int[2];
 		AnswerSets answers = (AnswerSets) out;
+		error = error +answers.getErrors();
+		
+		System.out.println(error);
 		for(AnswerSet sol : answers.getAnswersets()){
-			System.out.println("nuova soluzione");
-//			HashSet<Object> atoms =(HashSet<Object>) sol.getAtoms();
-//			List<String> stringSol =  sol.getAnswerSet();
-			
-//			for(String atom : stringSol) {
-//				System.out.println("ciao");
-//				String[] split = atom.split("[()]");
-//				split = split[1].split(",");
-//				move[0]=Integer.parseInt(split[0]);
-//				move[1]=Integer.parseInt(split[1]);
 				
 			for(Object 	atom : sol.getAtoms()) {
 				if(! (atom instanceof ResponseAi))
@@ -86,7 +84,7 @@ public abstract class AbsMoveStrategy {
 				ResponseAi resp = (ResponseAi) atom;
 				move[0] = resp.getRow();
 				move[1] = resp.getCol();
-				System.out.println("ciao2");
+				
 			}
 			break;
 		}
@@ -96,7 +94,53 @@ public abstract class AbsMoveStrategy {
 	public static void compute2Bridges(Handler handler) throws Exception {
 		String calculator = "ais/bridgeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
-		addFileToProgram(program, calculator);
+//		addFileToProgram(program, calculator);
+		program.addFilesPath(calculator);
 		handler.addProgram(program);
+	}
+	
+	public static void computeWalls(Handler handler) throws Exception {
+		String calculator = "ais/wallCalculator.asp";
+		InputProgram program = new ASPInputProgram();
+//		addFileToProgram(program, calculator);
+		program.addFilesPath(calculator);
+		handler.addProgram(program);
+	}
+	
+	public static void computeRopes(Handler handler) throws Exception {
+		String calculator = "ais/ropeCalculator.asp";
+		InputProgram program = new ASPInputProgram();
+//		addFileToProgram(program, calculator);
+		program.addFilesPath(calculator);
+		handler.addProgram(program);
+	}
+	
+	public static void addCellsFacts(Handler handler, Grid context) throws Exception {
+		InputProgram facts = new ASPInputProgram();
+		for(int i=0;i<context.getDimension();i++)
+			for(int j=0;j<context.getDimension();j++) {
+				HexCell cell = new HexCell(new Coordinate(i, j),context);
+				cell.setState(context.getGrid()[i][j].getState());
+				facts.addObjectInput(cell);
+			}
+		handler.addProgram(facts);
+	}
+	
+	public static void addHistoryFacts(Handler handler, ArrayList<MoveAdapter> moves,int firstPlayer) throws Exception {
+		if(firstPlayer!=1 && firstPlayer!=2)
+			throw new RuntimeException("ERROR : The first player could only be either Player-1 or Player-2");
+		InputProgram facts = new ASPInputProgram();
+		int role = firstPlayer-1;
+		for(int it=0;it<moves.size();it++) {
+			role = (role+1)%2;
+			History h = new History(it, moves.get(it).move[0], moves.get(it).move[1], role+1);
+			facts.addObjectInput(h);
+		}
+		
+		LastMove lm = new LastMove(moves.size()-1);
+		
+		facts.addObjectInput(lm);
+		
+		handler.addProgram(facts);
 	}
 }

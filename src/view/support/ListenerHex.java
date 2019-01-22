@@ -37,8 +37,10 @@ public class ListenerHex  extends MouseAdapter{
 						/**/
 						
 						/*START AI */
-						if(str!=null)
+						if(str!=null) {
+							ai.addMove(i,j);
 							ai.doPlay(str);
+						}
 						/**/
 						
 						break;

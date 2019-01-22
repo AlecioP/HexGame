@@ -54,4 +54,11 @@ public class ArtificialIntelligence {
 			}
 		}
 	}
+	
+	public void addMove(int row,int col) {
+		int[] move = new int[2];
+		move[0]=row;
+		move[1]=col;
+		moves.add(new MoveAdapter(move));
+	}
 }
