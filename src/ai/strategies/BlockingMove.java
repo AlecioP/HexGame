@@ -17,10 +17,25 @@ public class BlockingMove extends AbsMoveStrategy{
 	}
 	
 	@Override
-	protected int[] doMove(Grid context, Handler handler, ArrayList<MoveAdapter> moves) throws Exception{
+	protected int[] doMove(Grid context, Handler handler, ArrayList<MoveAdapter> moves, boolean potWinLastMove) throws Exception{
 		
 		includeRoleDefiner(handler);
 		
+		/*TEST*/
+//		boolean resp = this.hasAiPotentiallyWon(context);
+//		if(resp) {
+//			JOptionPane.showMessageDialog(null, "POTENTIAL WIN");
+//			
+//		}
+//		System.out.println("TEST : "+resp);
+		/*TEST*/
+		boolean opponentTriesToUndoWin = false;
+		boolean resp = this.hasAiPotentiallyWon(context);
+		if(resp==false && potWinLastMove==true)
+			opponentTriesToUndoWin=true;
+		if(opponentTriesToUndoWin) {
+			//[...] DO SOMETHING
+		}
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath(AI_PATH);
 		handler.addProgram(solver);

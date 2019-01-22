@@ -20,6 +20,7 @@ public class ArtificialIntelligence {
 	private static String SOLVER_PATH="solver/dlv2.bin.x64";
 	private OptionDescriptor options;
 	private ArrayList<MoveAdapter> moves;
+	private boolean potentialWinLastAiTurn = false;
 	
 	public ArtificialIntelligence(Grid grid) {
 		this.context = grid;
@@ -38,7 +39,7 @@ public class ArtificialIntelligence {
 		handler.addOption(options);
 		strategy.defineAiRole(2);
 		try {
-			int[] move = strategy.doMove(context, handler,moves);
+			int[] move = strategy.doMove(context, handler,moves,potentialWinLastAiTurn);
 			if(move==null) {
 				System.out.println("CANNOT FIND VALID MOVE");
 				JOptionPane.showMessageDialog(null, "CANNOT FIND VALID MOVE");
@@ -47,6 +48,7 @@ public class ArtificialIntelligence {
 			System.out.println("Move is : "+move[0]+" "+move[1]);
 			context.occupy(move[0], move[1]);
 			moves.add(new MoveAdapter(move));
+			potentialWinLastAiTurn = strategy.hasAiPotentiallyWon(context);
 			
 		}catch(Exception e) {
 			try {
