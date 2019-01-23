@@ -1,9 +1,7 @@
 package ai.strategies;
 
-import java.util.ArrayList;
-
 import ai.AbsMoveStrategy;
-import ai.MoveAdapter;
+import ai.ArtificialIntelligence;
 import core.Grid;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
@@ -17,7 +15,7 @@ public class BlockingMove extends AbsMoveStrategy{
 	}
 	
 	@Override
-	protected int[] doMove(Grid context, Handler handler, ArrayList<MoveAdapter> moves, boolean potWinLastMove) throws Exception{
+	protected int[] doMove(Grid context, Handler handler, ArtificialIntelligence ai) throws Exception{
 		
 		includeRoleDefiner(handler);
 		
@@ -31,10 +29,19 @@ public class BlockingMove extends AbsMoveStrategy{
 		/*TEST*/
 		boolean opponentTriesToUndoWin = false;
 		boolean resp = this.hasAiPotentiallyWon(context);
+		boolean potWinLastMove = ai.getPotentialWinLastAiTurn();
 		if(resp==false && potWinLastMove==true)
 			opponentTriesToUndoWin=true;
 		if(opponentTriesToUndoWin) {
 			//[...] DO SOMETHING
+			AbsMoveStrategy.addCellsFacts(handler, context);
+			AbsMoveStrategy.addHistoryFacts(handler, ai.getMoves(), this.getRole());
+			AbsMoveStrategy.compute2Bridges(handler);
+			InputProgram solver = new ASPInputProgram();
+			solver.addFilesPath("ais/avoidUndoWin.asp");
+			handler.addProgram(solver);
+			Output out = handler.startSync();
+			return AbsMoveStrategy.handleOutput(out);
 		}
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath(AI_PATH);

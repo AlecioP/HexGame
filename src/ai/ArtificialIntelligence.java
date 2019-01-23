@@ -39,7 +39,7 @@ public class ArtificialIntelligence {
 		handler.addOption(options);
 		strategy.defineAiRole(2);
 		try {
-			int[] move = strategy.doMove(context, handler,moves,potentialWinLastAiTurn);
+			int[] move = strategy.doMove(context, handler,this);
 			if(move==null) {
 				System.out.println("CANNOT FIND VALID MOVE");
 				JOptionPane.showMessageDialog(null, "CANNOT FIND VALID MOVE");
@@ -70,4 +70,13 @@ public class ArtificialIntelligence {
 		move[1]=col;
 		moves.add(new MoveAdapter(move));
 	}
+
+	public boolean getPotentialWinLastAiTurn() {
+		return potentialWinLastAiTurn;
+	}
+
+	public ArrayList<MoveAdapter> getMoves() {
+		return moves;
+	}
+	
 }

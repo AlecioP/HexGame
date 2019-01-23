@@ -38,7 +38,7 @@ public abstract class AbsMoveStrategy {
 		AI_PATH = aI_PATH;
 	}
 	
-	protected abstract int[] doMove(Grid context,Handler handler,ArrayList<MoveAdapter> moves,boolean potWinLastMove) throws Exception ;
+	protected abstract int[] doMove(Grid context,Handler handler, ArtificialIntelligence ai) throws Exception ;
 	
 	public void includeRoleDefiner(Handler handler) throws Exception{
 		if(role!=0) {
