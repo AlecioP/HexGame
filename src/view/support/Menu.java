@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.plaf.metal.MetalBorders;
 
-import ai.strategies.RandomMove;
+import ai.strategies.BlockingMove;
 import controller.Game;
 
 public class Menu {
@@ -49,7 +49,7 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				Game g = new Game(mainframe);
 				g.play();
-				g.configureStrategy(new RandomMove());
+				g.configureStrategy(new BlockingMove());
 			}
 		});
 		mainframe.setSize(mainframe.getContentPane().getPreferredSize());

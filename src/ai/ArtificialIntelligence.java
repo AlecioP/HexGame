@@ -19,6 +19,7 @@ public class ArtificialIntelligence {
 	private static Handler handler = null;
 	private static String SOLVER_PATH="solver/dlv2.bin.x64";
 	private OptionDescriptor options;
+	private OptionDescriptor printInput;
 	private ArrayList<MoveAdapter> moves;
 	private boolean potentialWinLastAiTurn = false;
 	
@@ -30,6 +31,11 @@ public class ArtificialIntelligence {
 			options = new OptionDescriptor();
 			options.addOption("--filter=response/2");
 			options.setSeparator(" ");
+			
+			printInput = new OptionDescriptor();
+			printInput.addOption("--print-rewriting");
+			printInput.setSeparator(" ");
+			handler.addOption(printInput);
 		}
 	}
 	
@@ -37,6 +43,7 @@ public class ArtificialIntelligence {
 		handler.removeAll();
 		
 		handler.addOption(options);
+//		handler.addOption(printInput);
 		strategy.defineAiRole(2);
 		try {
 			int[] move = strategy.doMove(context, handler,this);

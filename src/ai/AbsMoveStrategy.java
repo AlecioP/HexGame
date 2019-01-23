@@ -189,10 +189,10 @@ public abstract class AbsMoveStrategy {
 		String error = "OUTPUT ERROR : "+System.lineSeparator();
 		error = error +answers.getErrors();
 		
-		System.out.println(error);
+//		System.out.println(error);
 		
 		for(AnswerSet as : answers.getAnswersets()) {
-			System.out.println("ANSWER :"+System.lineSeparator()+as.toString());
+//			System.out.println("ANSWER :"+System.lineSeparator()+as.toString());
 			for(Object 	atom : as.getAtoms()) {
 				if( atom instanceof PotentialWin)
 					return true;

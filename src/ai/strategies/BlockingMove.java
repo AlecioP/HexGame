@@ -23,6 +23,7 @@ public class BlockingMove extends AbsMoveStrategy{
 			AbsMoveStrategy.addCellsFacts(handler, context);
 			InputProgram solver = new ASPInputProgram();
 			solver.addFilesPath("ais/openingMove.asp");
+			handler.addProgram(solver);
 			Output out = handler.startSync();
 			return AbsMoveStrategy.handleOutput(out);
 			
@@ -54,6 +55,7 @@ public class BlockingMove extends AbsMoveStrategy{
 		handler.addProgram(solver);
 		
 		AbsMoveStrategy.addCellsFacts(handler, context);
+		AbsMoveStrategy.computeWalls(handler);
 		
 		Output out = handler.startSync();
 		
