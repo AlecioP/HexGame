@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import ai.convertedObjects.AuxCell;
 import ai.convertedObjects.ControlAi;
 import ai.convertedObjects.History;
 import ai.convertedObjects.LastMove;
@@ -96,12 +97,12 @@ public abstract class AbsMoveStrategy {
 		return move;
 	}
 	
-	public static void compute2Bridges(Handler handler) throws Exception {
+	public static int compute2Bridges(Handler handler) throws Exception {
 		String calculator = "ais/bridgeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
 //		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
-		handler.addProgram(program);
+		return handler.addProgram(program);
 	}
 	
 	public static void computeWalls(Handler handler) throws Exception {
@@ -129,6 +130,18 @@ public abstract class AbsMoveStrategy {
 				facts.addObjectInput(cell);
 			}
 		handler.addProgram(facts);
+	}
+	
+	public static int addAuxCellsFacts(Handler handler, Grid context) throws Exception {
+		InputProgram facts = new ASPInputProgram();
+		for(int i=0;i<context.getDimension();i++)
+			for(int j=0;j<context.getDimension();j++) {
+				HexCell cell = new HexCell(new Coordinate(i, j),context);
+				cell.setState(context.getGrid()[i][j].getState());
+				AuxCell aux = new AuxCell(cell);
+				facts.addObjectInput(aux);
+			}
+		return handler.addProgram(facts);
 	}
 	
 	public static void addHistoryFacts(Handler handler, ArrayList<MoveAdapter> moves,int firstPlayer) throws Exception {
@@ -189,4 +202,47 @@ public abstract class AbsMoveStrategy {
 		}
 		return false;
 	}
+
+	public static int[] computeSmartMove(Handler handler, Grid context) throws Exception{
+		/**
+		 *  This method returns an array of 2 int representing a "smartMove", or null 
+		 *  if there isn't any "smartMove" possible. 
+		 *  A "smartMove" is that move witch triggers a potential sure win.
+		 *  
+		 *  This method doesn't affect the state of the handler.
+		 *  For this reason every program inserted is tracked and then removed from
+		 *  the handler.
+		 */
+		
+		
+		ArrayList<Integer> added = new ArrayList<Integer>();
+		int id3 = AbsMoveStrategy.addAuxCellsFacts(handler, context);
+		int id4 = AbsMoveStrategy.compute2Bridges(handler);
+		added.add(Integer.valueOf(id3));
+		added.add(Integer.valueOf(id4));
+		InputProgram potWinSolver = new ASPInputProgram();
+		potWinSolver.addFilesPath("ais/potentialWinCalculator.asp");
+		int id1 = handler.addProgram(potWinSolver);
+		added.add(Integer.valueOf(id1));
+		InputProgram solver = new ASPInputProgram();
+		solver.addFilesPath("ais/smartMove.asp");
+		int id2 = handler.addProgram(solver);
+		added.add(Integer.valueOf(id2));
+		
+		Output out = handler.startSync();
+		
+		//restore the state of the handler
+		for(Integer n:added) {
+			int index = n.intValue();
+			handler.removeProgram(index);
+		}
+		
+		/** smartMove.asp creates an instance of "response(Row,Column)" only if that move
+		 *  triggers a potential win. Otherwise there won't be any instance of "response"
+		 *  and then the returned array will be null.
+		 */
+		
+		return AbsMoveStrategy.handleOutput(out);
+	}
+
 }

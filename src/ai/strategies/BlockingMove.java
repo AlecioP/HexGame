@@ -19,14 +19,20 @@ public class BlockingMove extends AbsMoveStrategy{
 		
 		includeRoleDefiner(handler);
 		
-		/*TEST*/
-//		boolean resp = this.hasAiPotentiallyWon(context);
-//		if(resp) {
-//			JOptionPane.showMessageDialog(null, "POTENTIAL WIN");
-//			
-//		}
-//		System.out.println("TEST : "+resp);
-		/*TEST*/
+		if(ai.getMoves().size()<2) {//OPENING MOVE
+			AbsMoveStrategy.addCellsFacts(handler, context);
+			InputProgram solver = new ASPInputProgram();
+			solver.addFilesPath("ais/openingMove.asp");
+			Output out = handler.startSync();
+			return AbsMoveStrategy.handleOutput(out);
+			
+		}
+		
+		// AbsMoveStrategy.computeSmartMove doesn't affect the state of the handler
+		int[] smartMove = AbsMoveStrategy.computeSmartMove(handler, context);
+		if(smartMove != null)
+			return smartMove;
+		
 		boolean opponentTriesToUndoWin = false;
 		boolean resp = this.hasAiPotentiallyWon(context);
 		boolean potWinLastMove = ai.getPotentialWinLastAiTurn();
