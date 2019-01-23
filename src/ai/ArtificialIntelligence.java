@@ -86,4 +86,8 @@ public class ArtificialIntelligence {
 		return moves;
 	}
 	
+	public static void neutraliseHandler() {
+		handler = null;
+	}
+	
 }

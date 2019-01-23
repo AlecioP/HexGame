@@ -71,6 +71,7 @@ public class ButtonHex extends JButton {
 			}catch(Exception e) {}
 			state = State.ON;
 			paintComponent(g);
+			
 		}
 	}
 	
@@ -98,6 +99,16 @@ public class ButtonHex extends JButton {
 		double deltaX = (this.getWidth()-g.getFontMetrics(f).stringWidth(text))/2;
 		g.drawString(text, (int)deltaX, (int)deltaY+(int)pressDelta);
 		
+	}
+	
+	@Override
+	public void setText(String text) {
+		this.text = text;
+	}
+	
+	@Override
+	public String getText() {
+		return this.text;
 	}
 }
 

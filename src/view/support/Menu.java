@@ -13,6 +13,7 @@ import javax.swing.plaf.metal.MetalBorders;
 
 import ai.strategies.BlockingMove;
 import controller.Game;
+import view.sound.SoundsProvider;
 
 public class Menu {
 
@@ -21,15 +22,19 @@ public class Menu {
 	private ButtonHex play,sound;
 
 	public Menu() {
-		mainframe = new JFrame("Hex Game");
-		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainframe.getContentPane().setPreferredSize(new Dimension(700, 700));
+
+		this.mainframe = new JFrame();
+
+
+		this.mainframe.setTitle("Hex Game");
+		this.mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.mainframe.getContentPane().setPreferredSize(new Dimension(700, 700));
 		mainframe.getContentPane().setSize(mainframe.getContentPane().getPreferredSize());
-//		mainframe.setResizable(false);
+		//		mainframe.setResizable(false);
 
 		panel = new BgPanel(true);
-		
-//		Border border = new BasicBorders.ButtonBorder(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
+
+		//		Border border = new BasicBorders.ButtonBorder(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
 		Border border = new MetalBorders.InternalFrameBorder();
 		panel.setBorder(border);
 		panel.setBackground(new Color(153, 102, 51));
@@ -47,16 +52,36 @@ public class Menu {
 		panel.setVisible(true);
 		play.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				play.graphicClick();
+				//				try {
+				//					Thread.sleep((long) 250);
+				//				}catch(Exception ex) {ex.printStackTrace();}
 				Game g = new Game(mainframe);
 				g.play();
 				g.configureStrategy(new BlockingMove());
 			}
 		});
+
+		sound.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(sound.getText().equals("SOUND ON")) {	
+					sound.setText("SOUND OFF");
+				}else {	
+					sound.setText("SOUND ON");
+				}
+			}
+		});
+
+		sound.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SoundsProvider.getInstance().soundButtonClicked();
+			}
+		});
 		mainframe.setSize(mainframe.getContentPane().getPreferredSize());
 		mainframe.getContentPane().setVisible(true);
 		mainframe.setVisible(true);
+		SoundsProvider.getInstance().startSound(SoundsProvider.index_menu, true);
 	}
-
 
 	private static void fakePanel(int n,JPanel pane) {
 		for(int i=0;i<n;i++) {

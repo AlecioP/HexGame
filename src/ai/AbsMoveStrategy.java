@@ -52,6 +52,7 @@ public abstract class AbsMoveStrategy {
 		definer.addFilesPath(ROLE_DEFINE_PATH);
 		handler.addProgram(definer);
 		ASPMapper.getInstance().registerClass(ResponseAi.class);
+		
 	}
 	
 	public void defineAiRole(int role) {

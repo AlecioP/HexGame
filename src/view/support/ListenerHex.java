@@ -10,6 +10,7 @@ import ai.ArtificialIntelligence;
 import core.HexCell;
 import core.InvalidMoveException;
 import view.GridView;
+import view.sound.SoundsProvider;
 
 public class ListenerHex  extends MouseAdapter{
 
@@ -44,6 +45,14 @@ public class ListenerHex  extends MouseAdapter{
 							ai.doPlay(str);
 						}
 						/**/
+						
+						/* TEST-SOUND */
+						SoundsProvider.getInstance().startSound(SoundsProvider.index_ugh, false);
+						try {
+							Thread.sleep((long) 100);
+						}catch(Exception ex) {}
+						SoundsProvider.getInstance().startSound(SoundsProvider.index_wow, false);
+						/* TEST-SOUND */
 						
 						break;
 					}
