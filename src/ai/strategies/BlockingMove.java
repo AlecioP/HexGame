@@ -54,7 +54,8 @@ public class BlockingMove extends AbsMoveStrategy{
 		solver.addFilesPath(AI_PATH);
 		handler.addProgram(solver);
 		
-		AbsMoveStrategy.addCellsFacts(handler, context);
+		//Add "auxCell" to avoid redundancy due to "control"
+		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		AbsMoveStrategy.computeWalls(handler);
 		
 		Output out = handler.startSync();

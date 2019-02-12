@@ -43,9 +43,19 @@ public class ArtificialIntelligence {
 		handler.removeAll();
 		
 		handler.addOption(options);
-//		handler.addOption(printInput);
+		handler.addOption(printInput);
+		
+		/*Potentially removable*/
 		strategy.defineAiRole(2);
+		/**/
+		
+		
 		try {
+			
+			
+			AbsMoveStrategy.includeRoleSwap(handler, context);
+			
+			
 			int[] move = strategy.doMove(context, handler,this);
 			if(move==null) {
 				System.out.println("CANNOT FIND VALID MOVE");
@@ -53,7 +63,18 @@ public class ArtificialIntelligence {
 				return;
 			}
 			System.out.println("Move is : "+move[0]+" "+move[1]);
-			context.occupy(move[0], move[1]);
+			
+			/** 
+			 *  When A.I. controls role 1, the board is rotated to simulate
+			 *  A.I. controls role 2.
+			 *  For this reason when A.I. controls role 1 the simulated move
+			 *  must be converted in a real one, by rotating it.
+			 */
+			if(strategy.getRole()==2)
+				context.occupy(move[0], move[1]);
+			else
+				context.occupy(move[1], move[0]);
+			
 			moves.add(new MoveAdapter(move));
 			potentialWinLastAiTurn = strategy.hasAiPotentiallyWon(context);
 			

@@ -167,7 +167,10 @@ public abstract class AbsMoveStrategy {
 		Handler handler = new DesktopHandler(new DLVDesktopService("solver/dlv2.bin.x64"));
 		//moves is null because they are useless
 		includeRoleDefiner(handler);
-		AbsMoveStrategy.addCellsFacts(handler, grid);
+		AbsMoveStrategy.addAuxCellsFacts(handler, grid);
+		
+		AbsMoveStrategy.includeRoleSwap(handler, grid);
+		
 		AbsMoveStrategy.compute2Bridges(handler);
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath("ais/potentialWinCalculator.asp");
@@ -218,13 +221,23 @@ public abstract class AbsMoveStrategy {
 		
 		ArrayList<Integer> added = new ArrayList<Integer>();
 		int id3 = AbsMoveStrategy.addAuxCellsFacts(handler, context);
-		int id4 = AbsMoveStrategy.compute2Bridges(handler);
 		added.add(Integer.valueOf(id3));
+		
+		/* 
+		
+		"bridgeDouble" instances are now computed in "smartMove.asp"
+		int id4 = AbsMoveStrategy.compute2Bridges(handler);
 		added.add(Integer.valueOf(id4));
+		
+		*/
+		
+		
 		InputProgram potWinSolver = new ASPInputProgram();
 		potWinSolver.addFilesPath("ais/potentialWinCalculator.asp");
 		int id1 = handler.addProgram(potWinSolver);
 		added.add(Integer.valueOf(id1));
+		
+		
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath("ais/smartMove.asp");
 		int id2 = handler.addProgram(solver);
@@ -244,6 +257,13 @@ public abstract class AbsMoveStrategy {
 		 */
 		
 		return AbsMoveStrategy.handleOutput(out);
+	}
+	
+	public static int includeRoleSwap(Handler handler, Grid context) throws Exception{
+		InputProgram swapper = new ASPInputProgram();
+		swapper.addFilesPath("ais/boardSwap.asp");
+		AbsMoveStrategy.addAuxCellsFacts(handler, context);
+		return handler.addProgram(swapper);
 	}
 
 }
