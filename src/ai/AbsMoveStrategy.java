@@ -28,7 +28,7 @@ import it.unical.mat.embasp.specializations.dlv.desktop.DLVDesktopService;
 
 public abstract class AbsMoveStrategy {
 	protected String AI_PATH;
-	private String ROLE_DEFINE_PATH = "ais/roleDefine.asp";
+	private String ROLE_DEFINE_PATH = "data/ais/roleDefine.asp";
 	private int role=0;
 
 	public String getAI_PATH() {
@@ -99,7 +99,7 @@ public abstract class AbsMoveStrategy {
 	}
 	
 	public static int compute2Bridges(Handler handler) throws Exception {
-		String calculator = "ais/bridgeCalculator.asp";
+		String calculator = "data/ais/bridgeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
 //		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
@@ -107,7 +107,7 @@ public abstract class AbsMoveStrategy {
 	}
 	
 	public static void computeWalls(Handler handler) throws Exception {
-		String calculator = "ais/wallCalculator.asp";
+		String calculator = "data/ais/wallCalculator.asp";
 		InputProgram program = new ASPInputProgram();
 //		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
@@ -115,7 +115,7 @@ public abstract class AbsMoveStrategy {
 	}
 	
 	public static void computeRopes(Handler handler) throws Exception {
-		String calculator = "ais/ropeCalculator.asp";
+		String calculator = "data/ais/ropeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
 //		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
@@ -164,7 +164,7 @@ public abstract class AbsMoveStrategy {
 	}
 
 	public boolean hasAiPotentiallyWon(Grid grid) throws Exception{
-		Handler handler = new DesktopHandler(new DLVDesktopService("solver/dlv2.bin.x64"));
+		Handler handler = new DesktopHandler(new DLVDesktopService("data/solver/dlv2.bin.x64"));
 		//moves is null because they are useless
 		includeRoleDefiner(handler);
 		AbsMoveStrategy.addAuxCellsFacts(handler, grid);
@@ -173,7 +173,7 @@ public abstract class AbsMoveStrategy {
 		
 		AbsMoveStrategy.compute2Bridges(handler);
 		InputProgram solver = new ASPInputProgram();
-		solver.addFilesPath("ais/potentialWinCalculator.asp");
+		solver.addFilesPath("data/ais/potentialWinCalculator.asp");
 		handler.addProgram(solver);
 		
 		/*OPTIONS*/
@@ -233,13 +233,13 @@ public abstract class AbsMoveStrategy {
 		
 		
 		InputProgram potWinSolver = new ASPInputProgram();
-		potWinSolver.addFilesPath("ais/potentialWinCalculator.asp");
+		potWinSolver.addFilesPath("data/ais/potentialWinCalculator.asp");
 		int id1 = handler.addProgram(potWinSolver);
 		added.add(Integer.valueOf(id1));
 		
 		
 		InputProgram solver = new ASPInputProgram();
-		solver.addFilesPath("ais/smartMove.asp");
+		solver.addFilesPath("data/ais/smartMove.asp");
 		int id2 = handler.addProgram(solver);
 		added.add(Integer.valueOf(id2));
 		
@@ -261,7 +261,7 @@ public abstract class AbsMoveStrategy {
 	
 	public static int includeRoleSwap(Handler handler, Grid context) throws Exception{
 		InputProgram swapper = new ASPInputProgram();
-		swapper.addFilesPath("ais/boardSwap.asp");
+		swapper.addFilesPath("data/ais/boardSwap.asp");
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		return handler.addProgram(swapper);
 	}

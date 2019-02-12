@@ -9,11 +9,11 @@ import javax.imageio.ImageIO;
 public class ResourceProvider {
 	
 //	private final static String IMG_PATH= "img";
-	private final static String BUTTON1_ON="img/button1ON.png";
-	private final static String BUTTON1_OFF="img/button1OFF.png";
-	private final static String BUTTON2_ON="img/buttonON.png";
-	private final static String BUTTON2_OFF="img/buttonOFF.png";
-	private final static String BG = "img/bg.png";
+	private final static String BUTTON1_ON="data/img/button1ON.png";
+	private final static String BUTTON1_OFF="data/img/button1OFF.png";
+	private final static String BUTTON2_ON="data/img/buttonON.png";
+	private final static String BUTTON2_OFF="data/img/buttonOFF.png";
+	private final static String BG = "data/img/bg.png";
 	private Image hexcell,button1On,button1Off,button2On,button2Off,bg;
 	
 	private static ResourceProvider instance=null;

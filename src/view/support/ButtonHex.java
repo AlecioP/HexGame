@@ -49,7 +49,7 @@ public class ButtonHex extends JButton {
 		});
 		this.text = text;
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("font/west.ttf"));
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("data/font/west.ttf"));
 		} catch (FontFormatException | IOException e1) {} 
 		
 	}

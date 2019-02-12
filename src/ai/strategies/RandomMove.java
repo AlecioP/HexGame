@@ -11,7 +11,7 @@ import it.unical.mat.embasp.languages.asp.ASPInputProgram;
 public class RandomMove extends AbsMoveStrategy {
 
 	public RandomMove() {
-		AI_PATH = "ais/randomMove.asp";
+		AI_PATH = "data/ais/randomMove.asp";
 	}
 	
 	@Override

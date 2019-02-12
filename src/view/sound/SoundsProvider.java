@@ -43,7 +43,7 @@ public class SoundsProvider {
 		streams = new AudioInputStream[soundCounter];
 		clips = new Clip[soundCounter];
 
-		String pathToSounds = "sounds"+File.separatorChar;
+		String pathToSounds = "data"+File.separatorChar+"sounds"+File.separatorChar;
 
 		audios[index_menu]            = new File(pathToSounds+"menu.wav");
 		audios[index_wow] = new File(pathToSounds+"wow.wav");

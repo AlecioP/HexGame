@@ -11,7 +11,7 @@ import it.unical.mat.embasp.languages.asp.ASPInputProgram;
 public class BlockingMove extends AbsMoveStrategy{
 
 	public BlockingMove() {
-		AI_PATH = "ais/blockingMove.asp";
+		AI_PATH = "data/ais/blockingMove.asp";
 	}
 	
 	@Override
@@ -22,7 +22,7 @@ public class BlockingMove extends AbsMoveStrategy{
 		if(ai.getMoves().size()<2) {//OPENING MOVE
 			AbsMoveStrategy.addCellsFacts(handler, context);
 			InputProgram solver = new ASPInputProgram();
-			solver.addFilesPath("ais/openingMove.asp");
+			solver.addFilesPath("data/ais/openingMove.asp");
 			handler.addProgram(solver);
 			Output out = handler.startSync();
 			return AbsMoveStrategy.handleOutput(out);
@@ -45,7 +45,7 @@ public class BlockingMove extends AbsMoveStrategy{
 			AbsMoveStrategy.addHistoryFacts(handler, ai.getMoves(), this.getRole());
 			AbsMoveStrategy.compute2Bridges(handler);
 			InputProgram solver = new ASPInputProgram();
-			solver.addFilesPath("ais/avoidUndoWin.asp");
+			solver.addFilesPath("data/ais/avoidUndoWin.asp");
 			handler.addProgram(solver);
 			Output out = handler.startSync();
 			return AbsMoveStrategy.handleOutput(out);

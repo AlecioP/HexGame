@@ -17,7 +17,7 @@ public class ArtificialIntelligence {
 
 	private Grid context;
 	private static Handler handler = null;
-	private static String SOLVER_PATH="solver/dlv2.bin.x64";
+	private static String SOLVER_PATH="data/solver/dlv2.bin.x64";
 	private OptionDescriptor options;
 	private OptionDescriptor printInput;
 	private ArrayList<MoveAdapter> moves;
@@ -80,7 +80,7 @@ public class ArtificialIntelligence {
 			
 		}catch(Exception e) {
 			try {
-				File out = new File("log/log.txt");
+				File out = new File("data/log/log.txt");
 				if(!out.exists())
 					out.createNewFile();
 				e.printStackTrace();
