@@ -17,7 +17,7 @@ public class ArtificialIntelligence {
 
 	private Grid context;
 	private static Handler handler = null;
-	private static String SOLVER_PATH="data/solver/dlv2.bin.x64";
+	private static String SOLVER_PATH="data/solver/dlv2";
 	private OptionDescriptor options;
 	private OptionDescriptor printInput;
 	private ArrayList<MoveAdapter> moves;

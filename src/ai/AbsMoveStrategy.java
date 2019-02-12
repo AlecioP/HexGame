@@ -164,7 +164,7 @@ public abstract class AbsMoveStrategy {
 	}
 
 	public boolean hasAiPotentiallyWon(Grid grid) throws Exception{
-		Handler handler = new DesktopHandler(new DLVDesktopService("data/solver/dlv2.bin.x64"));
+		Handler handler = new DesktopHandler(new DLVDesktopService("data/solver/dlv2"));
 		//moves is null because they are useless
 		includeRoleDefiner(handler);
 		AbsMoveStrategy.addAuxCellsFacts(handler, grid);
