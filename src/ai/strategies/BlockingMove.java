@@ -60,8 +60,9 @@ public class BlockingMove extends AbsMoveStrategy{
 		
 //		handler.removeOption(0);
 //		handler.addOption(ai.getOptimum());
+		AbsMoveStrategy.computeAdjacentCells(handler);
 		Output out = handler.startSync();
-		
+		System.out.println(out.getOutput());
 		return AbsMoveStrategy.handleOutput(out);
 	}
 }

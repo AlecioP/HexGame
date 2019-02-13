@@ -82,6 +82,8 @@ public class ArtificialIntelligence {
 			
 			moves.add(new MoveAdapter(move));
 			potentialWinLastAiTurn = strategy.hasAiPotentiallyWon(context);
+			if(potentialWinLastAiTurn)
+				JOptionPane.showMessageDialog(null, "Potential A.I. Win ! ");
 			
 		}catch(Exception e) {
 			try {

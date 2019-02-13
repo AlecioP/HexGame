@@ -17,7 +17,7 @@ stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE")    :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row
 stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE") :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row:cell(0,Row,Y1), Row>X2}.
 
 % Compute how important is to perform a block on some Column
-weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}.
+weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}, Weight<>0.
 
 % MOST IMPORTANT : Stop long walls -> @3
 :~ response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@3]
@@ -34,3 +34,11 @@ movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"TOP-SI
 movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), X=X2+3.
 
 :~ perfectStoppableWall(_,_,_,_,_), not movePerformsPerfectBlock. [1@1]
+
+% Test -> Perform blocks creating bridges
+
+moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 <= #count{X,Y: adj(X,Y,X1,Y1), adj(X,Y,X2,Y2)}.
+
+:~ not moveCreatesBridge. [1@4]
+
+% include Adjacent cells computation 

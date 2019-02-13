@@ -202,7 +202,7 @@ public abstract class AbsMoveStrategy {
 		AnswerSets answers = (AnswerSets) out;
 		String error = "OUTPUT ERROR : "+System.lineSeparator();
 		error = error +answers.getErrors();
-
+		System.out.println(answers.getAnswerSetsString());
 		//		System.out.println(error);
 
 		for(AnswerSet as : answers.getAnswersets()) {
@@ -274,6 +274,12 @@ public abstract class AbsMoveStrategy {
 		swapper.addFilesPath("data/ais/boardSwap.asp");
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		return handler.addProgram(swapper);
+	}
+	
+	public static int computeAdjacentCells(Handler handler) throws Exception {
+		InputProgram program = new ASPInputProgram();
+		program.addFilesPath("data/ais/adjacentCells.asp");
+		return handler.addProgram(program);
 	}
 
 }
