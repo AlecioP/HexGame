@@ -13,21 +13,24 @@ column(C):- cell(_,_,C).
 % CASE control(2) from LEFT to RIGHT
 
 % stoppable walls
-stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE")    :- oppWall(X1,Y1,X2,Y2), control(2), 0<>#count{Row:cell(0,Row,Y1), Row<X1}.
-stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE") :- oppWall(X1,Y1,X2,Y2), control(2), 0<>#count{Row:cell(0,Row,Y1), Row>X2}.
+stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE")    :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row:cell(0,Row,Y1), Row<X1}.
+stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE") :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row:cell(0,Row,Y1), Row>X2}.
 
 % Compute how important is to perform a block on some Column
-weightBlockInColumn(Weight,C):- control(2), column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}.
+weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}.
 
 % MOST IMPORTANT : Stop long walls -> @3
-:~ control(2), response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@3]
+:~ response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@3]
 
 % LESS IMPORTANT : Perform U-Block -> @1
 
-edgeStoppableWall(X1,Y,X2,Y,"TOP-SIDE")   :- stoppableWall(X1,Y,X2,Y,"TOP-SIDE")   , control(2), cell(0,R,Y), R=X2+1.
-edgeStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"):- stoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), control(2), cell(0,R,Y), R=X1-1.
+edgeStoppableWall(X1,Y1,X2,Y2,"TOP-SIDE"):-stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE"),X3=X1-1, cell(Color,X3,Y1),Color!=1.
+edgeStoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE"):-stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE"),X3=X2+1, cell(Color,X3,Y1),Color!=1.
 
+perfectStoppableWall(X1,Y,X2,Y,"TOP-SIDE") :- edgeStoppableWall(X1,Y,X2,Y,"TOP-SIDE"), cell(0,R,Y), R=X1-3.
+perfectStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE") :- edgeStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), cell(0,R,Y), R=X2+3.
 
-:~ control(2), stoppableWall(X1,Y,X2,Y), response(X,Y), X<X2+3, cell(0,X2+3,Y), X1<X2, N = #count{Y: response(X,Y), stoppableWall(X1,Y,X2,Y),X>X1-3}. [1-N@1]
-:~ control(2), stoppableWall(X1,Y,X2,Y), response(X,Y), X>X1-3, cell(0,X1-3,Y), X1<X2, N = #count{Y: response(X,Y), stoppableWall(X1,Y,X2,Y),X<X2+3}. [1-N@1]
+movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"TOP-SIDE"), X=X1-3.
+movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), X=X2+3.
 
+:~ perfectStoppableWall(_,_,_,_,_), not movePerformsPerfectBlock. [1@1]

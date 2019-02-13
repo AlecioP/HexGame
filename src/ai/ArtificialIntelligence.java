@@ -20,6 +20,7 @@ public class ArtificialIntelligence {
 	private static String SOLVER_PATH="data/solver/dlv2";
 	private OptionDescriptor options;
 	private OptionDescriptor printInput;
+	private OptionDescriptor optimum;
 	private ArrayList<MoveAdapter> moves;
 	private boolean potentialWinLastAiTurn = false;
 	
@@ -36,13 +37,17 @@ public class ArtificialIntelligence {
 			printInput.addOption("--print-rewriting");
 			printInput.setSeparator(" ");
 			handler.addOption(printInput);
+			
+			optimum = new OptionDescriptor();
+			optimum.addOption("--printonlyoptimum ");
+			optimum.setSeparator(" ");
 		}
 	}
 	
 	public void doPlay(AbsMoveStrategy strategy) {
 		handler.removeAll();
 		
-		handler.addOption(options);
+	System.out.println(	handler.addOption(options)    );
 		handler.addOption(printInput);
 		
 		/*Potentially removable*/
@@ -109,6 +114,10 @@ public class ArtificialIntelligence {
 	
 	public static void neutraliseHandler() {
 		handler = null;
+	}
+
+	public OptionDescriptor getOptimum() {
+		return optimum;
 	}
 	
 }

@@ -58,6 +58,8 @@ public class BlockingMove extends AbsMoveStrategy{
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		AbsMoveStrategy.computeWalls(handler);
 		
+//		handler.removeOption(0);
+//		handler.addOption(ai.getOptimum());
 		Output out = handler.startSync();
 		
 		return AbsMoveStrategy.handleOutput(out);

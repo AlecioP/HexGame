@@ -38,9 +38,9 @@ public abstract class AbsMoveStrategy {
 	public void setAI_PATH(String aI_PATH) {
 		AI_PATH = aI_PATH;
 	}
-	
+
 	protected abstract int[] doMove(Grid context,Handler handler, ArtificialIntelligence ai) throws Exception ;
-	
+
 	public void includeRoleDefiner(Handler handler) throws Exception{
 		if(role!=0) {
 			InputProgram facts = new ASPInputProgram();
@@ -48,23 +48,23 @@ public abstract class AbsMoveStrategy {
 			handler.addProgram(facts);
 		}
 		InputProgram definer = new ASPInputProgram();
-//		addFileToProgram(definer, ROLE_DEFINE_PATH);
+		//		addFileToProgram(definer, ROLE_DEFINE_PATH);
 		definer.addFilesPath(ROLE_DEFINE_PATH);
 		handler.addProgram(definer);
 		ASPMapper.getInstance().registerClass(ResponseAi.class);
-		
+
 	}
-	
+
 	public void defineAiRole(int role) {
 		if(role!=1 && role!=2)
 			return;
 		this.role = role;
 	}
-	
+
 	public int getRole() {
 		return this.role;
 	}
-	
+
 	public static void addFileToProgram(InputProgram progr,String path) throws Exception{
 		BufferedReader br = new BufferedReader(new FileReader(new File(path)));
 		String line;
@@ -74,54 +74,64 @@ public abstract class AbsMoveStrategy {
 		}
 		br.close();
 	}
-	
+
 	public static int[] handleOutput(Output out) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		String error = "OUTPUT ERROR : "+System.lineSeparator();
 		int[] move = null;
 		AnswerSets answers = (AnswerSets) out;
 		error = error +answers.getErrors();
-		
+
 		System.out.println(error);
+
+		/*DRAFT*/
+		int lastLevelW = Integer.MAX_VALUE;
+		/*DRAFT*/
+
+
 		for(AnswerSet sol : answers.getAnswersets()){
-				
-			for(Object 	atom : sol.getAtoms()) {
-				if(! (atom instanceof ResponseAi))
-					continue;
-				ResponseAi resp = (ResponseAi) atom;
-				move = new int[2];
-				move[0] = resp.getRow();
-				move[1] = resp.getCol();
-				break;
+			int current = Integer.MAX_VALUE;
+			if(!sol.getLevelWeight().isEmpty()) {
+				sol.getLevelWeight().get(Integer.valueOf(0)).intValue();
 			}
-			break;
+			if(current==Integer.MAX_VALUE || current<lastLevelW)
+				for(Object 	atom : sol.getAtoms()) {
+					if(! (atom instanceof ResponseAi))
+						continue;
+					ResponseAi resp = (ResponseAi) atom;
+					move = new int[2];
+					move[0] = resp.getRow();
+					move[1] = resp.getCol();
+					break;
+				}
+			//			break;
 		}
 		return move;
 	}
-	
+
 	public static int compute2Bridges(Handler handler) throws Exception {
 		String calculator = "data/ais/bridgeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
-//		addFileToProgram(program, calculator);
+		//		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
 		return handler.addProgram(program);
 	}
-	
+
 	public static void computeWalls(Handler handler) throws Exception {
 		String calculator = "data/ais/wallCalculator.asp";
 		InputProgram program = new ASPInputProgram();
-//		addFileToProgram(program, calculator);
+		//		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
 		handler.addProgram(program);
 	}
-	
+
 	public static void computeRopes(Handler handler) throws Exception {
 		String calculator = "data/ais/ropeCalculator.asp";
 		InputProgram program = new ASPInputProgram();
-//		addFileToProgram(program, calculator);
+		//		addFileToProgram(program, calculator);
 		program.addFilesPath(calculator);
 		handler.addProgram(program);
 	}
-	
+
 	public static void addCellsFacts(Handler handler, Grid context) throws Exception {
 		InputProgram facts = new ASPInputProgram();
 		for(int i=0;i<context.getDimension();i++)
@@ -132,7 +142,7 @@ public abstract class AbsMoveStrategy {
 			}
 		handler.addProgram(facts);
 	}
-	
+
 	public static int addAuxCellsFacts(Handler handler, Grid context) throws Exception {
 		InputProgram facts = new ASPInputProgram();
 		for(int i=0;i<context.getDimension();i++)
@@ -144,7 +154,7 @@ public abstract class AbsMoveStrategy {
 			}
 		return handler.addProgram(facts);
 	}
-	
+
 	public static void addHistoryFacts(Handler handler, ArrayList<MoveAdapter> moves,int firstPlayer) throws Exception {
 		if(firstPlayer!=1 && firstPlayer!=2)
 			throw new RuntimeException("ERROR : The first player could only be either Player-1 or Player-2");
@@ -155,11 +165,11 @@ public abstract class AbsMoveStrategy {
 			History h = new History(it, moves.get(it).move[0], moves.get(it).move[1], role+1);
 			facts.addObjectInput(h);
 		}
-		
+
 		LastMove lm = new LastMove(moves.size()-1);
-		
+
 		facts.addObjectInput(lm);
-		
+
 		handler.addProgram(facts);
 	}
 
@@ -168,14 +178,14 @@ public abstract class AbsMoveStrategy {
 		//moves is null because they are useless
 		includeRoleDefiner(handler);
 		AbsMoveStrategy.addAuxCellsFacts(handler, grid);
-		
+
 		AbsMoveStrategy.includeRoleSwap(handler, grid);
-		
+
 		AbsMoveStrategy.compute2Bridges(handler);
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath("data/ais/potentialWinCalculator.asp");
 		handler.addProgram(solver);
-		
+
 		/*OPTIONS*/
 		OptionDescriptor opt1 = new OptionDescriptor();
 		opt1.addOption("--filter=potentialWin/0");
@@ -187,16 +197,16 @@ public abstract class AbsMoveStrategy {
 		handler.addOption(options);
 		/*OPTIONS*/
 		ASPMapper.getInstance().registerClass(PotentialWin.class);
-		
+
 		Output out = handler.startSync();
 		AnswerSets answers = (AnswerSets) out;
 		String error = "OUTPUT ERROR : "+System.lineSeparator();
 		error = error +answers.getErrors();
-		
-//		System.out.println(error);
-		
+
+		//		System.out.println(error);
+
 		for(AnswerSet as : answers.getAnswersets()) {
-//			System.out.println("ANSWER :"+System.lineSeparator()+as.toString());
+			//			System.out.println("ANSWER :"+System.lineSeparator()+as.toString());
 			for(Object 	atom : as.getAtoms()) {
 				if( atom instanceof PotentialWin)
 					return true;
@@ -217,48 +227,48 @@ public abstract class AbsMoveStrategy {
 		 *  For this reason every program inserted is tracked and then removed from
 		 *  the handler.
 		 */
-		
-		
+
+
 		ArrayList<Integer> added = new ArrayList<Integer>();
 		int id3 = AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		added.add(Integer.valueOf(id3));
-		
+
 		/* 
-		
+
 		"bridgeDouble" instances are now computed in "smartMove.asp"
 		int id4 = AbsMoveStrategy.compute2Bridges(handler);
 		added.add(Integer.valueOf(id4));
-		
-		*/
-		
-		
+
+		 */
+
+
 		InputProgram potWinSolver = new ASPInputProgram();
 		potWinSolver.addFilesPath("data/ais/potentialWinCalculator.asp");
 		int id1 = handler.addProgram(potWinSolver);
 		added.add(Integer.valueOf(id1));
-		
-		
+
+
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath("data/ais/smartMove.asp");
 		int id2 = handler.addProgram(solver);
 		added.add(Integer.valueOf(id2));
-		
+
 		Output out = handler.startSync();
-		
+
 		//restore the state of the handler
 		for(Integer n:added) {
 			int index = n.intValue();
 			handler.removeProgram(index);
 		}
-		
+
 		/** smartMove.asp creates an instance of "response(Row,Column)" only if that move
 		 *  triggers a potential win. Otherwise there won't be any instance of "response"
 		 *  and then the returned array will be null.
 		 */
-		
+
 		return AbsMoveStrategy.handleOutput(out);
 	}
-	
+
 	public static int includeRoleSwap(Handler handler, Grid context) throws Exception{
 		InputProgram swapper = new ASPInputProgram();
 		swapper.addFilesPath("data/ais/boardSwap.asp");
