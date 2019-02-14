@@ -122,7 +122,7 @@ public class GridView extends JPanel{
 					g2d.drawLine(xpoints[3], ypoints[3], xpoints[4], ypoints[4]);
 				}
 				g2d.setColor(Color.BLACK);
-				g2d.drawString("<"+row+","+col+">", xpoints[5], ypoints[5]);
+//				g2d.drawString("<"+row+","+col+">", xpoints[5], ypoints[5]);
 			}
 		g2d.setColor(Color.red);
 //		g2d.drawString(grid.getTurn(), 0, 50);

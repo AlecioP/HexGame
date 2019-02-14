@@ -33,12 +33,14 @@ perfectStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE") :- edgeStoppableWall(X1,Y,X2,Y,"BO
 movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"TOP-SIDE"), X=X1-3.
 movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), X=X2+3.
 
-:~ perfectStoppableWall(_,_,_,_,_), not movePerformsPerfectBlock. [1@1]
+existsPSW:- perfectStoppableWall(_,_,_,_,_).
+
+:~ existsPSW, not movePerformsPerfectBlock. [1@1]
 
 % Test -> Perform blocks creating bridges
 
-moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 <= #count{X,Y: adj(X,Y,X1,Y1), adj(X,Y,X2,Y2)}.
+moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 <= #count{X,Y: adj(X,Y,X1,Y1), adj(X,Y,X2,Y2), cell(0,X,Y)}.
 
-:~ not moveCreatesBridge. [1@4]
+:~ not moveCreatesBridge. [1@1]
 
 % include Adjacent cells computation 

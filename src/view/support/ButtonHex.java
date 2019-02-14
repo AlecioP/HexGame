@@ -24,9 +24,10 @@ public class ButtonHex extends JButton {
 	public static final int TYPE_INFO=0,TYPE_WARNING=1;
 	private String text;
 	private Font font;
+	private int type;
 	
 	public ButtonHex(int type,String text) {
-		
+		this.type=type;
 		switch(type) {
 		case TYPE_INFO :{
 			on = ResourceProvider.getInstance().getButton1On();
@@ -70,15 +71,16 @@ public class ButtonHex extends JButton {
 				Thread.sleep((long) 250);
 			}catch(Exception e) {}
 			state = State.ON;
-			paintComponent(g);
-			
+//			paintComponent(g);
+			this.getParent().getParent().repaint();
 		}
 	}
 	
 	protected void paintComponent(Graphics g) {
-		Color c = this.getParent().getBackground();
-		g.setColor(c);
-		g.fillRect( 0, 0, this.getWidth(), this.getHeight());
+//		Color c = this.getParent().getBackground();
+//		g.setColor(c);
+//		g.fillRect( 0, 0, this.getWidth(), this.getHeight());
+		this.setBackground(new Color(0, 0, 0, 0.0f));
 		Image img;
 		if(state.equals(State.ON))
 			img = on;
@@ -94,9 +96,13 @@ public class ButtonHex extends JButton {
 		if(state.equals(State.ON))
 			pressDelta = 0;
 		else
-			pressDelta = this.getHeight()/10;
-		double deltaY =( this.getHeight()-g.getFontMetrics(f).getMaxAscent())/2;
+			pressDelta = /*this.getHeight()/1*/0;
+		double deltaY =( this.getHeight()-g.getFontMetrics(f).getMaxAscent());
 		double deltaX = (this.getWidth()-g.getFontMetrics(f).stringWidth(text))/2;
+		if(type == ButtonHex.TYPE_INFO)
+			g.setColor(new Color(210,176,106));
+		else
+			g.setColor(Color.black);
 		g.drawString(text, (int)deltaX, (int)deltaY+(int)pressDelta);
 		
 	}

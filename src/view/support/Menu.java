@@ -8,8 +8,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.plaf.metal.MetalBorders;
+//import javax.swing.border.Border;
+//import javax.swing.plaf.metal.MetalBorders;
 
 import ai.strategies.BlockingMove;
 import controller.Game;
@@ -28,16 +28,19 @@ public class Menu {
 
 		this.mainframe.setTitle("Hex Game");
 		this.mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.mainframe.getContentPane().setPreferredSize(new Dimension(700, 700));
+		this.mainframe.getContentPane().setPreferredSize(new Dimension(800, 800));
+		this.mainframe.getContentPane().setBackground(Color.black);
+//		this.mainframe.setUndecorated(true);
+//		this.mainframe.setBackground(new Color(0,0,0,0.0f));
 		mainframe.getContentPane().setSize(mainframe.getContentPane().getPreferredSize());
 		//		mainframe.setResizable(false);
 
 		panel = new BgPanel(true);
 
 		//		Border border = new BasicBorders.ButtonBorder(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
-		Border border = new MetalBorders.InternalFrameBorder();
-		panel.setBorder(border);
-		panel.setBackground(new Color(153, 102, 51));
+//		Border border = new MetalBorders.InternalFrameBorder();
+//		panel.setBorder(border);
+//		panel.setBackground(new Color(153, 102, 51));
 		panel.setLayout(new GridLayout(5,3));
 		fakePanel(4, panel);
 		play = new ButtonHex(ButtonHex.TYPE_INFO,"PLAY");

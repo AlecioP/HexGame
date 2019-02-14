@@ -1,5 +1,6 @@
 package view.support;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -13,12 +14,13 @@ public class BgPanel extends JPanel{
 	
 	public BgPanel(boolean b) {
 		super(b);
+		this.setBackground(new Color(0, 0, 0, 0.0f));
 	}
 
 	@Override
 	protected void paintComponent(Graphics arg0) {
 		
-		super.paintComponent(arg0);
+//		super.paintComponent(arg0);
 		arg0.drawImage(ResourceProvider.getInstance().getBg(), 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 }
