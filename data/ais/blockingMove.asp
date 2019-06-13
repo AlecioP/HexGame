@@ -20,7 +20,7 @@ stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE") :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row
 %weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}, Weight<>0.
 
 % MOST IMPORTANT : Stop long walls -> @3
-:~ response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@3]
+:~ response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@4]
 
 % LESS IMPORTANT : Perform U-Block -> @1
 
@@ -35,11 +35,11 @@ movePerformsPerfectBlock:- response(X,Y), perfectStoppableWall(X1,Y,X2,Y,"BOTTOM
 
 existsPSW:- perfectStoppableWall(_,_,_,_,_).
 
-:~ existsPSW, not movePerformsPerfectBlock. [1@1]
+:~ existsPSW, not movePerformsPerfectBlock. [1@2]
 
 % Test -> Perform blocks creating bridges
 
-moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 <= #count{X,Y: adj(X,Y,X1,Y1), adj(X,Y,X2,Y2), cell(0,X,Y)}.
+moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 = #count{X,Y: adj(X,Y,X1,Y1), adj(X,Y,X2,Y2), cell(0,X,Y)},not adj(X1,Y1,X2,Y2).
 
 :~ not moveCreatesBridge. [1@1]
 
@@ -53,7 +53,7 @@ moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 <= #count{X,Y: adj(X,Y,X1
 notBlocked(X1,Y,X2,Y,"TOP-SIDE"):- stoppableWall(X1,Y,X2,Y,"TOP-SIDE"), 0 = #count{Row:cell(2,Row,Y),Row<X1}.
 notBlocked(X1,Y,X2,Y,"BOTTOM-SIDE"):- stoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), 0 = #count{Row:cell(2,Row,Y),Row>X2}.
 
-:~ notBlocked(X1,Y,X2,Y,"TOP-SIDE"), response(Row,_), Row>X1. [1@2]
-:~ notBlocked(X1,Y,X2,Y,"BOTTOM-SIDE"), response(Row,_), Row<X2. [1@2]
+:~ notBlocked(X1,Y,X2,Y,"TOP-SIDE"), response(Row,_), Row>X1. [1@3]
+:~ notBlocked(X1,Y,X2,Y,"BOTTOM-SIDE"), response(Row,_), Row<X2. [1@3]
 
 weightBlockInColumn(W,C):- column(C), W = #count{SIDE : notBlocked(_,C,_,C,SIDE)}.

@@ -19,7 +19,7 @@ public class BlockingMove extends AbsMoveStrategy{
 		
 		includeRoleDefiner(handler);
 		
-		if(ai.getMoves().size()<2) {//OPENING MOVE
+		if(ai.getMoves().size()<2 ) {//OPENING MOVE
 			AbsMoveStrategy.addCellsFacts(handler, context);
 			InputProgram solver = new ASPInputProgram();
 			solver.addFilesPath("data/ais/openingMove.asp");
@@ -61,6 +61,10 @@ public class BlockingMove extends AbsMoveStrategy{
 //		handler.removeOption(0);
 //		handler.addOption(ai.getOptimum());
 		AbsMoveStrategy.computeAdjacentCells(handler);
+		
+		
+//		handler.addOption(ai.getTestfilter());
+		
 		Output out = handler.startSync();
 		System.out.println(out.getOutput());
 		return AbsMoveStrategy.handleOutput(out);

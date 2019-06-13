@@ -21,6 +21,10 @@ public class ArtificialIntelligence {
 	private OptionDescriptor options;
 	private OptionDescriptor printInput;
 	private OptionDescriptor optimum;
+	
+	private OptionDescriptor testfilter;
+	
+	
 	private ArrayList<MoveAdapter> moves;
 	private boolean potentialWinLastAiTurn = false;
 	
@@ -41,13 +45,18 @@ public class ArtificialIntelligence {
 			optimum = new OptionDescriptor();
 			optimum.addOption("--printonlyoptimum ");
 			optimum.setSeparator(" ");
+			
+			testfilter = new OptionDescriptor();
+			testfilter.addOption("--filter=moveCreatesBridge/0");
+			testfilter.setSeparator(" ");
+			
 		}
 	}
 	
 	public void doPlay(AbsMoveStrategy strategy) {
 		handler.removeAll();
 		
-	System.out.println(	handler.addOption(options)    );
+		System.out.println(	handler.addOption(options)    );
 		handler.addOption(printInput);
 		
 		/*Potentially removable*/
@@ -121,5 +130,11 @@ public class ArtificialIntelligence {
 	public OptionDescriptor getOptimum() {
 		return optimum;
 	}
+
+	public OptionDescriptor getTestfilter() {
+		return testfilter;
+	}
+	
+	
 	
 }
