@@ -17,7 +17,7 @@ stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE")    :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row
 stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE") :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row:cell(0,Row,Y1), Row>X2}.
 
 % Compute how important is to perform a block on some Column
-weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}, Weight<>0.
+%weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}, Weight<>0.
 
 % MOST IMPORTANT : Stop long walls -> @3
 :~ response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@3]
@@ -44,3 +44,16 @@ moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 <= #count{X,Y: adj(X,Y,X1
 :~ not moveCreatesBridge. [1@1]
 
 % include Adjacent cells computation 
+
+
+
+
+%TEST
+
+notBlocked(X1,Y,X2,Y,"TOP-SIDE"):- stoppableWall(X1,Y,X2,Y,"TOP-SIDE"), 0 = #count{Row:cell(2,Row,Y),Row<X1}.
+notBlocked(X1,Y,X2,Y,"BOTTOM-SIDE"):- stoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), 0 = #count{Row:cell(2,Row,Y),Row>X2}.
+
+:~ notBlocked(X1,Y,X2,Y,"TOP-SIDE"), response(Row,_), Row>X1. [1@2]
+:~ notBlocked(X1,Y,X2,Y,"BOTTOM-SIDE"), response(Row,_), Row<X2. [1@2]
+
+weightBlockInColumn(W,C):- column(C), W = #count{SIDE : notBlocked(_,C,_,C,SIDE)}.
