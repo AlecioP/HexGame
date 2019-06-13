@@ -12,6 +12,7 @@ import ai.convertedObjects.History;
 import ai.convertedObjects.LastMove;
 import ai.convertedObjects.PotentialWin;
 import ai.convertedObjects.ResponseAi;
+import ai.convertedObjects.UBlock;
 import core.Coordinate;
 import core.Grid;
 import core.HexCell;
@@ -84,47 +85,47 @@ public abstract class AbsMoveStrategy {
 		System.out.println(error);
 
 		/*DRAFT*/
-//		int lastLevelW = Integer.MAX_VALUE;
+		//		int lastLevelW = Integer.MAX_VALUE;
 		/*DRAFT*/
 		int converted = answers.getAnswersets().size();
 		AnswerSet optimum = answers.getAnswersets().get(converted-1);
-//		ArrayList<AnswerSet> restanti = new ArrayList<AnswerSet>(answers.getAnswersets());
-		
-//		int level = answers.getAnswersets().get(0).getLevelWeight().size()-1;
-//		while(level>=0) {
-//			int min_w = restanti.get(0).getWeights().get(Integer.valueOf(level));
-//			optimum = restanti.get(0);
-//			for(AnswerSet x : restanti) {
-//				int current_w = x.getWeights().get(Integer.valueOf(level));
-//				if(min_w>current_w) {
-//					restanti.remove(optimum);
-//					optimum = x;
-//					min_w = current_w;
-//				}
-//			}
-//			level--;
-//		}
-		
+		//		ArrayList<AnswerSet> restanti = new ArrayList<AnswerSet>(answers.getAnswersets());
+
+		//		int level = answers.getAnswersets().get(0).getLevelWeight().size()-1;
+		//		while(level>=0) {
+		//			int min_w = restanti.get(0).getWeights().get(Integer.valueOf(level));
+		//			optimum = restanti.get(0);
+		//			for(AnswerSet x : restanti) {
+		//				int current_w = x.getWeights().get(Integer.valueOf(level));
+		//				if(min_w>current_w) {
+		//					restanti.remove(optimum);
+		//					optimum = x;
+		//					min_w = current_w;
+		//				}
+		//			}
+		//			level--;
+		//		}
+
 		System.out.println(optimum);
 
 
-//		for(AnswerSet sol : answers.getAnswersets()){
-//			int current = Integer.MAX_VALUE;
-//			if(!sol.getLevelWeight().isEmpty()) {
-//				sol.getLevelWeight().get(Integer.valueOf(0)).intValue();
-//			}
-//			if(current==Integer.MAX_VALUE || current<lastLevelW)
-				for(Object 	atom : optimum.getAtoms()) {
-					if(! (atom instanceof ResponseAi))
-						continue;
-					ResponseAi resp = (ResponseAi) atom;
-					move = new int[2];
-					move[0] = resp.getRow();
-					move[1] = resp.getCol();
-					break;
-				}
-			//			break;
-//		}
+		//		for(AnswerSet sol : answers.getAnswersets()){
+		//			int current = Integer.MAX_VALUE;
+		//			if(!sol.getLevelWeight().isEmpty()) {
+		//				sol.getLevelWeight().get(Integer.valueOf(0)).intValue();
+		//			}
+		//			if(current==Integer.MAX_VALUE || current<lastLevelW)
+		for(Object 	atom : optimum.getAtoms()) {
+			if(! (atom instanceof ResponseAi))
+				continue;
+			ResponseAi resp = (ResponseAi) atom;
+			move = new int[2];
+			move[0] = resp.getRow();
+			move[1] = resp.getCol();
+			break;
+		}
+		//			break;
+		//		}
 		return move;
 	}
 
@@ -295,11 +296,38 @@ public abstract class AbsMoveStrategy {
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		return handler.addProgram(swapper);
 	}
-	
+
 	public static int computeAdjacentCells(Handler handler) throws Exception {
 		InputProgram program = new ASPInputProgram();
 		program.addFilesPath("data/ais/adjacentCells.asp");
 		return handler.addProgram(program);
+	}
+
+	public static int[] readUblock(Output o, UBlock last) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+
+		AnswerSets answers = (AnswerSets) o;
+
+		AnswerSet optimum = answers.getAnswersets().get(answers.getAnswersets().size()-1);
+
+		int[] move = null;
+
+		for(Object 	atom : optimum.getAtoms()) {
+			if(! (atom instanceof UBlock))
+				continue;
+			UBlock resp = (UBlock) atom;
+			move = new int[2];
+			move[0] = resp.getRow();
+			move[1] = resp.getCol();
+			if(last==null)
+				break;
+			else {
+				if(last.getRow()==move[0] && last.getCol()==move[1])
+					move=null;
+			}
+		}
+
+		return move;
+
 	}
 
 }

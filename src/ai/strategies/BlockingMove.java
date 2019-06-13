@@ -2,6 +2,7 @@ package ai.strategies;
 
 import ai.AbsMoveStrategy;
 import ai.ArtificialIntelligence;
+import ai.convertedObjects.UBlock;
 import core.Grid;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
@@ -13,12 +14,12 @@ public class BlockingMove extends AbsMoveStrategy{
 	public BlockingMove() {
 		AI_PATH = "data/ais/blockingMove.asp";
 	}
-	
+
 	@Override
 	protected int[] doMove(Grid context, Handler handler, ArtificialIntelligence ai) throws Exception{
-		
+
 		includeRoleDefiner(handler);
-		
+
 		if(ai.getMoves().size()<2 ) {//OPENING MOVE
 			AbsMoveStrategy.addCellsFacts(handler, context);
 			InputProgram solver = new ASPInputProgram();
@@ -26,14 +27,14 @@ public class BlockingMove extends AbsMoveStrategy{
 			handler.addProgram(solver);
 			Output out = handler.startSync();
 			return AbsMoveStrategy.handleOutput(out);
-			
+
 		}
-		
+
 		// AbsMoveStrategy.computeSmartMove doesn't affect the state of the handler
 		int[] smartMove = AbsMoveStrategy.computeSmartMove(handler, context);
 		if(smartMove != null)
 			return smartMove;
-		
+
 		boolean opponentTriesToUndoWin = false;
 		boolean resp = this.hasAiPotentiallyWon(context);
 		boolean potWinLastMove = ai.getPotentialWinLastAiTurn();
@@ -53,20 +54,34 @@ public class BlockingMove extends AbsMoveStrategy{
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath(AI_PATH);
 		handler.addProgram(solver);
-		
+
 		//Add "auxCell" to avoid redundancy due to "control"
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		AbsMoveStrategy.computeWalls(handler);
-		
-//		handler.removeOption(0);
-//		handler.addOption(ai.getOptimum());
+
+		//		handler.removeOption(0);
+		//		handler.addOption(ai.getOptimum());
 		AbsMoveStrategy.computeAdjacentCells(handler);
-		
-		
-//		handler.addOption(ai.getTestfilter());
+
+
+		//		handler.addOption(ai.getTestfilter());
+
+		if(ai.getLastBlock()!=null) {
+			InputProgram factBlock = new ASPInputProgram();
+			factBlock.addObjectInput(ai.getLastBlock());
+			handler.addProgram(factBlock);
+		}
 		
 		Output out = handler.startSync();
 		System.out.println(out.getOutput());
+
+		int[] blocco = AbsMoveStrategy.readUblock(out,ai.getLastBlock());
+
+		if(blocco!=null)
+			ai.setLastBlock(new UBlock(blocco[0],blocco[1]));
+		else
+			ai.setLastBlock(null);
+
 		return AbsMoveStrategy.handleOutput(out);
 	}
 }
