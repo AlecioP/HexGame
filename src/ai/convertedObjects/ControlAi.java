@@ -21,6 +21,6 @@ public class ControlAi {
 	public void setAi(int ai) {
 		this.ai = ai;
 	}
-	
+	//ciao
 	
 }
