@@ -51,6 +51,9 @@ public class BlockingMove extends AbsMoveStrategy{
 			Output out = handler.startSync();
 			return AbsMoveStrategy.handleOutput(out);
 		}
+		
+		AbsMoveStrategy.addHistoryFacts(handler, ai.getMoves(), this.getRole());
+		
 		InputProgram solver = new ASPInputProgram();
 		solver.addFilesPath(AI_PATH);
 		handler.addProgram(solver);
@@ -59,7 +62,7 @@ public class BlockingMove extends AbsMoveStrategy{
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		AbsMoveStrategy.computeWalls(handler);
 
-		//		handler.removeOption(0);
+//				handler.removeOption(0);
 		//		handler.addOption(ai.getOptimum());
 		AbsMoveStrategy.computeAdjacentCells(handler);
 

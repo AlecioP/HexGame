@@ -11,6 +11,7 @@ import ai.convertedObjects.UBlock;
 import core.Grid;
 import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.OptionDescriptor;
+import it.unical.mat.embasp.languages.asp.ASPMapper;
 import it.unical.mat.embasp.platforms.desktop.DesktopHandler;
 import it.unical.mat.embasp.specializations.dlv.desktop.DLVDesktopService;
 
@@ -37,7 +38,7 @@ public class ArtificialIntelligence {
 		if(handler==null) {
 			handler = new DesktopHandler(new DLVDesktopService(SOLVER_PATH));
 			options = new OptionDescriptor();
-			options.addOption("--filter=response/2");
+			options.addOption("--filter=response/2,ublock/2");
 			options.setSeparator(" ");
 
 			printInput = new OptionDescriptor();
@@ -54,6 +55,7 @@ public class ArtificialIntelligence {
 			testfilter.setSeparator(" ");
 
 		}
+		
 	}
 
 	public void doPlay(AbsMoveStrategy strategy) {
@@ -68,7 +70,7 @@ public class ArtificialIntelligence {
 
 
 		try {
-
+			ASPMapper.getInstance().registerClass(UBlock.class);
 
 			AbsMoveStrategy.includeRoleSwap(handler, context);
 
