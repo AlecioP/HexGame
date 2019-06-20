@@ -8,6 +8,7 @@ import it.unical.mat.embasp.base.Handler;
 import it.unical.mat.embasp.base.InputProgram;
 import it.unical.mat.embasp.base.Output;
 import it.unical.mat.embasp.languages.asp.ASPInputProgram;
+import it.unical.mat.embasp.languages.asp.AnswerSets;
 
 public class BlockingMove extends AbsMoveStrategy{
 
@@ -62,7 +63,6 @@ public class BlockingMove extends AbsMoveStrategy{
 		AbsMoveStrategy.addAuxCellsFacts(handler, context);
 		AbsMoveStrategy.computeWalls(handler);
 
-//				handler.removeOption(0);
 		//		handler.addOption(ai.getOptimum());
 		AbsMoveStrategy.computeAdjacentCells(handler);
 
@@ -75,6 +75,27 @@ public class BlockingMove extends AbsMoveStrategy{
 			handler.addProgram(factBlock);
 		}
 		
+		int[] test = AbsMoveStrategy.undoEnemyWin(context);
+		if(test!=null)
+			return test;
+		
+		handler.removeOption(0);
+		handler.addOption(ai.getPrintInput());
+		
+		Output out1 = handler.startSync();
+		/*STAMPE DI DEBUG*/
+		AnswerSets ans = (AnswerSets) out1;
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println(ans.getOutput());
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		/**/
+		handler.addOption(ai.getOptions());
 		Output out = handler.startSync();
 		System.out.println(out.getOutput());
 

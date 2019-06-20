@@ -148,6 +148,14 @@ public class ArtificialIntelligence {
 		this.lastBlock = lastBlock;
 	}
 
+	public OptionDescriptor getOptions() {
+		return options;
+	}
 
+	public OptionDescriptor getPrintInput() {
+		return printInput;
+	}
+
+	
 
 }

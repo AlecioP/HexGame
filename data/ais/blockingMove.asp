@@ -8,8 +8,6 @@ response(X,Y)|noResponse(X,Y):- cell(0,X,Y).
 dim(N):- M = #max{C:cell(_,_,C)},N=M+1.
 column(C):- cell(_,_,C).
 
-% IF THERE IS A WALL AND THE MOVE DOESN'T BLOCK IT, THEN IT'S BAD
-
 % CASE control(2) from LEFT to RIGHT
 
 % stoppable walls
@@ -17,12 +15,10 @@ stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE")    :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row
 stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE") :- oppWall(X1,Y1,X2,Y2),  0<>#count{Row:cell(0,Row,Y1), Row>X2}.
 
 % Compute how important is to perform a block on some Column
-%weightBlockInColumn(Weight,C):- column(C), Weight = #count{R1,R2:stoppableWall(R1,C,R2,C,_),R1<R2}, Weight<>0.
 
-% MOST IMPORTANT : Stop long walls -> @3
 :~ response(X,Y1), weightBlockInColumn(W,Y),Y1!=Y. [W@5]
 
-% LESS IMPORTANT : Perform U-Block -> @1
+%Compute stoppable walls
 
 edgeStoppableWall(X1,Y1,X2,Y2,"TOP-SIDE"):-stoppableWall(X1,Y1,X2,Y2,"TOP-SIDE"),X3=X1-1, cell(Color,X3,Y1),Color!=1.
 edgeStoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE"):-stoppableWall(X1,Y1,X2,Y2,"BOTTOM-SIDE"),X3=X2+1, cell(Color,X3,Y1),Color!=1.
@@ -39,18 +35,13 @@ existsPSW:- perfectStoppableWall(_,_,_,_,_).
 
 ublock(X,Y):-movePerformsPerfectBlock,response(X,Y).
 
-% Test -> Perform blocks creating bridges
+%Perform blocks creating bridges
 
 moveCreatesBridge :- response(X2,Y2), cell(2,X1,Y1), 2 = #count{X,Y: adj(X,Y,X1,Y1), adj(X,Y,X2,Y2), cell(0,X,Y)},not adj(X1,Y1,X2,Y2).
 
 :~ not moveCreatesBridge. [1@1]
 
 % include Adjacent cells computation 
-
-
-
-
-%COLUMN WEIGHT
 
 notBlocked(X1,Y,X2,Y,"TOP-SIDE"):- stoppableWall(X1,Y,X2,Y,"TOP-SIDE"), 0 = #count{Row:cell(2,Row,Y),Row<X1}.
 notBlocked(X1,Y,X2,Y,"BOTTOM-SIDE"):- stoppableWall(X1,Y,X2,Y,"BOTTOM-SIDE"), 0 = #count{Row:cell(2,Row,Y),Row>X2}.
@@ -87,4 +78,3 @@ Y1>Y2,Y1>Y.
 :~ not nextublock. [1@2]
 
 ublock(X,Y):-nextublock, response(X,Y).
-

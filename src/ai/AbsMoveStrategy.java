@@ -84,37 +84,17 @@ public abstract class AbsMoveStrategy {
 
 		System.out.println(error);
 
-		/*DRAFT*/
-		//		int lastLevelW = Integer.MAX_VALUE;
-		/*DRAFT*/
+		System.out.println(answers.getOutput());
+		
 		int converted = answers.getAnswersets().size();
+		if(converted==0)
+			return move;
 		AnswerSet optimum = answers.getAnswersets().get(converted-1);
-		//		ArrayList<AnswerSet> restanti = new ArrayList<AnswerSet>(answers.getAnswersets());
-
-		//		int level = answers.getAnswersets().get(0).getLevelWeight().size()-1;
-		//		while(level>=0) {
-		//			int min_w = restanti.get(0).getWeights().get(Integer.valueOf(level));
-		//			optimum = restanti.get(0);
-		//			for(AnswerSet x : restanti) {
-		//				int current_w = x.getWeights().get(Integer.valueOf(level));
-		//				if(min_w>current_w) {
-		//					restanti.remove(optimum);
-		//					optimum = x;
-		//					min_w = current_w;
-		//				}
-		//			}
-		//			level--;
-		//		}
 
 		System.out.println(optimum);
 
 
-		//		for(AnswerSet sol : answers.getAnswersets()){
-		//			int current = Integer.MAX_VALUE;
-		//			if(!sol.getLevelWeight().isEmpty()) {
-		//				sol.getLevelWeight().get(Integer.valueOf(0)).intValue();
-		//			}
-		//			if(current==Integer.MAX_VALUE || current<lastLevelW)
+	
 		for(Object 	atom : optimum.getAtoms()) {
 			if(! (atom instanceof ResponseAi))
 				continue;
@@ -124,8 +104,6 @@ public abstract class AbsMoveStrategy {
 			move[1] = resp.getCol();
 			break;
 		}
-		//			break;
-		//		}
 		return move;
 	}
 
@@ -328,6 +306,27 @@ public abstract class AbsMoveStrategy {
 
 		return move;
 
+	}
+	
+	public static int[] undoEnemyWin(Grid g) throws Exception {
+		
+		try {
+			Handler h = new DesktopHandler(new DLVDesktopService("data/solver/dlv2"));
+			AbsMoveStrategy.addCellsFacts(h, g);
+			AbsMoveStrategy.computeAdjacentCells(h);
+			OptionDescriptor filter = new OptionDescriptor();
+			filter.addOption("--filter=response/2");
+//			filter.addOption("-n-1");
+			filter.setSeparator(" ");
+			h.addOption(filter);
+		
+			InputProgram solver = new ASPInputProgram();
+			solver.addFilesPath("data/ais/undoEnemyWin.asp");
+			h.addProgram(solver);
+		
+			Output o = h.startSync();
+			return AbsMoveStrategy.handleOutput(o);
+		}catch(Exception e) {return null;}
 	}
 
 }
